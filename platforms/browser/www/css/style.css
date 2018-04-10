@@ -1,0 +1,19 @@
+table {
+	margin: 20px auto; 
+	border: outset black 6px; 
+	background: black; 
+}
+
+td {
+	line-height: 0; 
+	width: 40px; 
+	height: 40px; 
+	background: black; 
+	text-align: center; 
+	vertical-align: middle; 
+}
+
+tr:nth-child(odd) td:nth-child(odd), 
+tr:nth-child(even) td:nth-child(even) {
+	background: white; 
+}
