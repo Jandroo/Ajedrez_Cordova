@@ -29,7 +29,14 @@
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <title>Hello World</title>
+        <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval';
+        style-src 'self' 'unsafe-inline';
+        media-src *;
+        img-src 'self' data: content:;
+        script-src * 'unsafe-eval' 'unsafe-inline';
+        connect-src * 'unsafe-eval' 'unsafe-inline';">
+        <title>Bienvenido al Ajedrez</title>
     </head>
     <body>
         <div class="app">
@@ -44,8 +51,10 @@
             
         </table>
         
+        <button id="login">Login</button>
+
         <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="jquery-3.2.1.js"></script>
+        <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>

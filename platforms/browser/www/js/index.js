@@ -47,20 +47,65 @@ var app = {
 
  function tablero(){
 
-    var escaques; 
+    var escas, padre, hijo, moviendo; 
+    var trebejos0 = ["♖","","","","","","",""];
 
-      escaques = document.getElementById("tablero"); 
+      escas = document.getElementById("tablero"); 
       for(f=0; f<8; f++) {
-        var fila = escaques.insertRow(); 
+        var fila = escas.insertRow(); 
 
         for(c=0; c<8; c++){
           var celda = fila.insertCell(); 
-          if(f==0) celda.innerHTML = "<span class=negras>"+"</span>"; 
-          else if(f==1) celda.innerHTML = "<span class=negras>"+"</span>"; 
+          if(f==0 && c==0) celda.innerHTML = "<span class=negras>"+trebejos0[c]+"</span>"; 
+          else if(f==1) celda.innerHTML = "<span class=>"+"</span>"; 
           else if(f==6) celda.innerHTML = "<span class=blancas>"+"</span>"; 
           else if(f==7) celda.innerHTML = "<span class=blancas>"+"</span>"; 
         }
       }
+
+      var movible = document.querySelectorAll("td"); 
+        for(m=0; m<movible.length; m++) {
+        movible[m].setAttribute("onclick", "juega(this)", false);
     }
 
+    function juega(T) {
+
+        var elementos = document.querySelectorAll("table, table span"); 
+
+        if(!moviendo && T.firstElementChild){
+        padre = T; 
+        hijo = T.innerHTML; 
+
+        for(i=0; elementos[i]; i++) elementos[i].classList.add("mano"); 
+
+        T.querySelector("span").style.opacity = ".4"; 
+
+        moviendo = true; 
+    }
+
+    else if(moviendo){
+        padre.innerHTML = ""; 
+        T.innerHTML = hijo; 
+
+    for(i=0; elementos[i]; i++) elementos[i].classList.remove("mano"); 
+
+        moviendo = false; 
+    }
+    }
+}
+
+var api = {
+
+    login:function(){
+        $.getJSON("http://localhost:8080/api/usuarios/login?email=user@gmail.com&password=P@ssw0rd",function(data) {
+        alert(data.mensaje);
+    }).fail( function(e) {
+        alert("error");
+        console.log(e);
+    });
+    
+    }
+}
+
 app.initialize();
+$('button').click(api.login);

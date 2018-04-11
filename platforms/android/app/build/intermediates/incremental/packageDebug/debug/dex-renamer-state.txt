@@ -1,0 +1,4 @@
+#Wed Apr 11 19:20:51 CEST 2018
+base.0=/home/info.web/aws2-19/Documents/CordovaCode/ajedrez/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0
+renamed.0=classes.dex
+file.0=/home/info.web/aws2-19/Documents/CordovaCode/ajedrez/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0/classes.dex
