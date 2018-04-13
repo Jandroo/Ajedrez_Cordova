@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
+ var token;
+ var app = {
     // Application Constructor
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
@@ -41,44 +42,80 @@ var app = {
 
         console.log('Received Event: ' + id);
         tablero();
+
+        $("form").submit(function(e){
+            e.preventDefault();
+            var email = $(this).find("input[name='email']").val();
+            var password = $(this).find("input[name='password']").val();
+
+            $.getJSON("https://infinite-river-22647.herokuapp.com/api/usuarios/login?email="+email+"&password="+password,function(data) {
+                texto = document.getElementById("texto");
+                if (data.estado == 0){
+                    var node = document.createTextNode(data.mensaje);
+                    texto.appendChild(node);
+                }
+                else{
+                    token = data.token;
+                    $("p").empty();
+                }
+            }).fail( function(e) {
+                alert("error");
+                console.log(e);
+            });
+        });
+
+        $('#boton2').click(function(e){
+            e.preventDefault();
+            $.getJSON("https://infinite-river-22647.herokuapp.com/api/usuarios/logout?token="+token,function(data) {
+                texto = document.getElementById("texto");
+                if (data.estado == 0){
+                    var node = document.createTextNode(data.estado);
+                    texto.appendChild(node);
+                }
+                else{
+                    alert(data.estado);
+                    $("p").empty();
+                }
+            })
+        });
     }
-    
 };
 
- function tablero(){
+var escas, padre, hijo, moviendo; 
 
-    var escas, padre, hijo, moviendo; 
-    var trebejos0 = ["♖","","","","","","",""];
+function tablero(){
 
-      escas = document.getElementById("tablero"); 
-      for(f=0; f<8; f++) {
+    var trebejos0 = ["♖","","","","","","","♖"];
+
+    escas = document.getElementById("tablero"); 
+    for(f=0; f<8; f++) {
         var fila = escas.insertRow(); 
 
         for(c=0; c<8; c++){
           var celda = fila.insertCell(); 
           if(f==0 && c==0) celda.innerHTML = "<span class=negras>"+trebejos0[c]+"</span>"; 
           else if(f==1) celda.innerHTML = "<span class=>"+"</span>"; 
-          else if(f==6) celda.innerHTML = "<span class=blancas>"+"</span>"; 
-          else if(f==7) celda.innerHTML = "<span class=blancas>"+"</span>"; 
-        }
+          else if(f==6) celda.innerHTML = "<span class=>"+"</span>"; 
+          else if(f==7 && c==7) celda.innerHTML = "<span class=blancas>"+trebejos0[c]+"</span>"; 
       }
+  }
 
-      var movible = document.querySelectorAll("td"); 
-        for(m=0; m<movible.length; m++) {
-        movible[m].setAttribute("onclick", "juega(this)", false);
-    }
+  var movible = document.querySelectorAll("td"); 
+  for(m=0; m<movible.length; m++) {
+    movible[m].addEventListener("click", juega);
+}
 
-    function juega(T) {
+function juega(T) {
+    var elementos = document.querySelectorAll("table, table span"); 
 
-        var elementos = document.querySelectorAll("table, table span"); 
+    if(!moviendo && T.firstElementChild){
 
-        if(!moviendo && T.firstElementChild){
         padre = T; 
         hijo = T.innerHTML; 
 
         for(i=0; elementos[i]; i++) elementos[i].classList.add("mano"); 
 
-        T.querySelector("span").style.opacity = ".4"; 
+            T.querySelector("span").style.opacity = ".4"; 
 
         moviendo = true; 
     }
@@ -87,25 +124,11 @@ var app = {
         padre.innerHTML = ""; 
         T.innerHTML = hijo; 
 
-    for(i=0; elementos[i]; i++) elementos[i].classList.remove("mano"); 
+        for(i=0; elementos[i]; i++) elementos[i].classList.remove("mano"); 
 
-        moviendo = false; 
-    }
+            moviendo = false; 
     }
 }
-
-var api = {
-
-    login:function(){
-        $.getJSON("http://localhost:8080/api/usuarios/login?email=user@gmail.com&password=P@ssw0rd",function(data) {
-        alert(data.mensaje);
-    }).fail( function(e) {
-        alert("error");
-        console.log(e);
-    });
-    
-    }
 }
 
 app.initialize();
-$('button').click(api.login);

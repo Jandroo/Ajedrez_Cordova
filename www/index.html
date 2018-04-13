@@ -29,6 +29,8 @@
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval';
         style-src 'self' 'unsafe-inline';
@@ -40,21 +42,28 @@
     </head>
     <body>
         <div class="app">
+            <div id="salir">
+                <input id="boton2" type="submit" name="submit" value="Logout" class="btn btn-danger">
+            </div>
             <h1>Apache Cordova</h1>
             <div id="deviceready" class="blink">
                 <p class="event listening">Connecting to Device</p>
                 <p class="event received">Device is Ready</p>
             </div>
         </div>
-
+        <p id="texto"></p>
         <table id="tablero">
-            
+         
         </table>
-        
-        <button id="login">Login</button>
+        <form>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input id="boton" type="submit" name="submit" value="Login" class="btn btn-success">
+        </form>
 
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+
     </body>
 </html>
