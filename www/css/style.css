@@ -3,8 +3,13 @@ body{
 }
 
 #salir{
-	text-align: right;
+	text-align: left;
 	padding: 5px 5px 5px 5px;	
+}
+
+#entrar{
+	text-align: left;
+	padding: 5px 5px 5px 5px;
 }
 
 table {
@@ -31,7 +36,7 @@ tr:nth-child(even) td:nth-child(even) {
 	background: white; 
 }
 
-.negras, .blancas {
+.negras {
 	display: inline-block; 
 	font: 800 30px/1 "ms mincho", "dejavu sans", "dejavu sans condensed", "dejavu sans mono", quivira, "arial unicode ms", code2000, "droid sans fallback", eversonmono, freeserif, "gnu unifont", "segoe ui symbol", "y.ozfont", "unicode bmp fallback sil", serif; 
 	width: 80%; height: 80%; 
@@ -46,10 +51,31 @@ tr:nth-child(even) td:nth-child(even) {
 	cursor: grab;  
 }
 
+.blancas {
+	display: inline-block; 
+	font: 800 30px/1 "ms mincho", "dejavu sans", "dejavu sans condensed", "dejavu sans mono", quivira, "arial unicode ms", code2000, "droid sans fallback", eversonmono, freeserif, "gnu unifont", "segoe ui symbol", "y.ozfont", "unicode bmp fallback sil", serif; 
+	width: 80%; height: 80%; 
+	background: black; 
+	color: white; 
+	border: 2px outset white; 
+	border-radius: 100%; 
+	overflow: hidden;
+	cursor: -ms-grab; 
+	cursor: -moz-grab; 
+	cursor: -webkit-grab; 
+	cursor: grab;  
+}
+
 .negras, .blancas {
 	background: black; 
 	color: white; 
 	border: 2px outset white; 
+}
+
+.blancas {
+	background: white; 
+	color: black; 
+	border: 2px outset black; 
 }
 
 .mano {
