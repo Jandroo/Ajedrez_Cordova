@@ -17,10 +17,13 @@
  * under the License.
  */
  var token;
- var contrincante;
+ var rival;
  var texto = $("#texto");
  var listaUsuarios = $("#listaUsuarios");
  var invitar = $("#invitarUsuarios");
+ var escas, padre, hijo, moviendo; 
+ var idIntervalInvitar = null;
+ var idIntervalInvitar2 = null;
 
  var app = {
     // Application Constructor
@@ -47,9 +50,9 @@
 
         console.log('Received Event: ' + id);
         tablero();
+        $("#tablero").hide();
 
         $("#salir").hide();
-        $("#tablero").hide();
         $("form").submit(function(e){
             e.preventDefault();
             var email = $(this).find("input[name='email']").val();
@@ -63,6 +66,8 @@
                     conectado();
                     $("#entrar").hide();
                     $("#salir").show();
+                    idIntervalInvitar = setInterval(invitaciones, 1000);
+                    idIntervalInvitar2 = setInterval(conectado, 1000);
                 }else{
                     texto.text(data.mensaje);
                }
@@ -76,16 +81,15 @@
              listaUsuarios.empty();
              $("#entrar").show();
              $("#salir").hide();
+             $("#tablero").hide();
+             clearInterval(idIntervalInvitar);
+             clearInterval(idIntervalInvitar2);
          })
         });
     }
 };
 
-var escas, padre, hijo, moviendo; 
-
 function tablero(){
-
-        rival = "user2";
 
         $.getJSON("http://localhost:8000/api/tablero/ver?token="+token+"&name="+rival,function(data) {
 
@@ -130,11 +134,15 @@ function conectado(){
                     e.preventDefault();
                     $.getJSON("http://localhost:8000/api/invitacion/invitar?token="+token+"&name="+e.target.id,function(data) {
                     console.log(data.mensaje);
+                    rival = e.target.id;
+                    tablero();
                     })
                 })
                li.append(data.usernames[i]);
                li.append(a);
                listaUsuarios.append(li);
+               clearInterval(idIntervalInvitar2);
+               $("#tablero").show();
             }
         }
     })
@@ -146,15 +154,17 @@ function invitaciones(){
 
     $.getJSON("http://localhost:8000/api/invitacion/ver?token="+token,function(data) {
         for(var i = 0; i < data.mensaje.length; i++){
+            clearInterval(idIntervalInvitar);
 
             var a1 = $("<a id='"+data.mensaje[i].name+"' href='#'>  Aceptar</a>").click(function(e){
 
                     $.getJSON("http://localhost:8000/api/invitacion/responder?token="+token+"&name="+e.target.id+
                                 "&respuesta=1'",function(data) {
+                                    li.remove();
+
                     })
 
                     rival = e.target.id;
-                    $('#tablero').show();
                     tablero();
                 })
 
@@ -163,6 +173,7 @@ function invitaciones(){
                     e.preventDefault();
                     $.getJSON("http://localhost:8000/api/invitacion/responder?token="+token+"&name="+e.target.id+
                                 "&respuesta=0'",function(data) {
+                                    li.remove();
                     })
                 })
 
@@ -170,21 +181,26 @@ function invitaciones(){
             li.append(a1);
             li.append(a2);
             invitar.append(li);
+            $("#tablero").show();
         }
     });
 }
 
 function juega(T) {
-    elementos = document.querySelectorAll("table, table span"); 
 
-        if(moviendo == null && $(this).find("span")){
-            padre = $(this); 
-            hijo = $(this).html(); 
-            for(i=0; elementos[i]; i++) 
-                elementos[i].classList.add("mano"); 
-            moviendo = this; 
+        let tablero = $("#tablero");
+        let ficha = $(this).find("span");
 
-        }else if(moviendo != null){
+        if(moviendo == null && ficha.length > 0){
+            tablero.find("td, span").addClass("mano");
+            ficha.css("opacity", "0.4")
+
+            moviendo = this;
+
+        }else if(moviendo){
+            let target = this;
+            tablero.find("td, span").removeClass("mano");
+
             let to = {
                 fila: $(moviendo).parent().index() + 1,
                 columna: $(moviendo).index() + 1
@@ -194,20 +210,32 @@ function juega(T) {
                 fila: $(this).parent().index() + 1,
                 columna: $(this).index() + 1
             }
-            console.log(to)
-            $.getJSON("http://localhost:8000/api/tablero/mover?token="+token+"&name="+name+"&toFila="+to.fila+
-        "&toColumna="+to.columna+"&fromFila="+from.fila+"&fromColumna="+from.columna,function(data) {
 
-            console.log(moviendo)
-            if(this != moviendo){
-                $(padre).html("");
+            $.getJSON("http://localhost:8000/api/tablero/mover?token="+token+"&name="+rival+"&toFila="+to.fila+
+        "&toColumna="+to.columna+"&fromFila="+from.fila+"&fromColumna="+from.columna, function(data) {
+            switch(data.mensaje){
+                case "ficha movida.":
+                    $(moviendo).find("span").css("opacity", "1");
+                    $(target).append($(moviendo).children());
+                    moviendo = null;
+                    break
+                default:
+                    $(moviendo).find("span").css("opacity", "1");
+                    moviendo = null;
+                break;
             }
+            console.log(data)
+            console.log(target);
+            console.log(moviendo);
+            /*if(target != moviendo){
+                $(target).children().remove();
+                $(moviendo).children().remove();
+                $(target).find("span").css("opacity", "1");
 
-            $(this).html(hijo);
-            for(i=0; elementos[i]; i++) 
-                elementos[i].classList.remove("mano");
-            moviendo = null; 
-        
+                moviendo = null;
+            }*/
+        })  .fail(function(data) {
+            console.log( data );
         })
     }
 }
